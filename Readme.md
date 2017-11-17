@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Liudmila](https://up.htmlacademy.ru/javascript/11/user/133198).
-* Наставник: `Неизвестно`.
+* Наставник: `Жека Лепёшкин`.
 
 ---
 
