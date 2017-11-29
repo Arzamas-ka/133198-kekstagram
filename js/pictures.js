@@ -1,5 +1,9 @@
 'use strict';
 
+var MIN_LIKES = 15;
+var MAX_LIKES = 200;
+var COUNT_POSTS = 25;
+
 var urlImages = [
   './photos/1.jpg', './photos/2.jpg', './photos/3.jpg', './photos/4.jpg',
   './photos/5.jpg', './photos/6.jpg', './photos/7.jpg', './photos/8.jpg',
@@ -19,38 +23,36 @@ var comments = [
   'Я поскользнулся на банановой кожуре и уронил фотоаппарат на кота и у меня получилась фотография лучше.'
 ];
 
-var MIN_LIKES = 15;
-var MAX_LIKES = 200;
 var template = document.querySelector('#picture-template').content;
 var templateCopies = [];
-var dataObjects = [];
+var posts = [];
 
 function generateDataObj() {
-  for (var i = 0; i < 25; i++) {
+  for (var i = 0; i < COUNT_POSTS; i++) {
     var randomNumber = Math.floor(Math.random() * 24);
     var randomComment = comments[Math.floor(Math.random() * 6)];
     var randomLikes = Math.floor(Math.random() * MAX_LIKES);
     randomLikes = randomLikes > MIN_LIKES ? randomLikes : randomLikes + MIN_LIKES;
 
-    var dataObj = {
+    var post = {
       photoUrl: urlImages[randomNumber],
       comment: randomComment,
       likes: randomLikes
     };
 
-    dataObjects.push(dataObj);
+    posts.push(post);
   }
 }
 
 function fillTemplates() {
 
-  for (var i = 0; i < 25; i++) {
+  for (var i = 0; i < COUNT_POSTS; i++) {
     var copyTemplate = template.cloneNode(true);
-    var dataObj = dataObjects[i];
+    var post = posts[i];
 
-    copyTemplate.querySelector('img').src = dataObj.photoUrl;
-    copyTemplate.querySelector('.picture-likes').textContent = dataObj.likes;
-    copyTemplate.querySelector('.picture-comments').textContent = dataObj.comment;
+    copyTemplate.querySelector('img').src = post.photoUrl;
+    copyTemplate.querySelector('.picture-likes').textContent = post.likes;
+    copyTemplate.querySelector('.picture-comments').textContent = post.comment;
     templateCopies[i] = copyTemplate;
   }
 }
@@ -58,22 +60,26 @@ function fillTemplates() {
 function renderTemplate() {
   var fragment = document.createDocumentFragment();
 
-  for (var j = 0; j < 25; j++) {
+  for (var j = 0; j < COUNT_POSTS; j++) {
     fragment.appendChild(templateCopies[j]);
   }
 
   document.querySelector('.pictures').appendChild(fragment);
 }
 
-function fillGallery() {
+function fillGallery(postData) {
   var gallery = document.querySelector('.gallery-overlay');
-  gallery.querySelector('img').src = dataObjects[0].photoUrl;
-  gallery.querySelector('.likes-count').textContent = dataObjects[0].likes;
+  gallery.querySelector('img').src = postData.photoUrl;
+  gallery.querySelector('.likes-count').textContent = postData.likes;
   gallery.querySelector('.comments-count').textContent = 1;
   gallery.classList.remove('hidden');
+}
+
+function getFirstItem(items) {
+  return items[0];
 }
 
 generateDataObj();
 fillTemplates();
 renderTemplate();
-fillGallery();
+fillGallery(getFirstItem(posts));
