@@ -29,13 +29,11 @@ var posts = [];
 
 function generateDataObj() {
   for (var i = 0; i < COUNT_POSTS; i++) {
-    var randomNumber = Math.floor(Math.random() * 24);
     var randomComment = comments[Math.floor(Math.random() * 6)];
     var randomLikes = Math.floor(Math.random() * MAX_LIKES);
     randomLikes = randomLikes > MIN_LIKES ? randomLikes : randomLikes + MIN_LIKES;
 
     var post = {
-      photoUrl: urlImages[randomNumber],
       comment: randomComment,
       likes: randomLikes
     };
@@ -50,7 +48,7 @@ function fillTemplates() {
     var copyTemplate = template.cloneNode(true);
     var post = posts[i];
 
-    copyTemplate.querySelector('img').src = post.photoUrl;
+    copyTemplate.querySelector('img').src = urlImages[i];
     copyTemplate.querySelector('.picture-likes').textContent = post.likes;
     copyTemplate.querySelector('.picture-comments').textContent = post.comment;
     templateCopies[i] = copyTemplate;
@@ -67,9 +65,9 @@ function renderTemplate() {
   document.querySelector('.pictures').appendChild(fragment);
 }
 
-function fillGallery(postData) {
+function fillGallery(postData, imageUrl) {
   var gallery = document.querySelector('.gallery-overlay');
-  gallery.querySelector('img').src = postData.photoUrl;
+  gallery.querySelector('img').src = imageUrl;
   gallery.querySelector('.likes-count').textContent = postData.likes;
   gallery.querySelector('.comments-count').textContent = 1;
   gallery.classList.remove('hidden');
@@ -82,4 +80,4 @@ function getFirstItem(items) {
 generateDataObj();
 fillTemplates();
 renderTemplate();
-fillGallery(getFirstItem(posts));
+fillGallery(getFirstItem(posts), getFirstItem(urlImages));
