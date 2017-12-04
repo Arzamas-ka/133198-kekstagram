@@ -5,7 +5,8 @@ var MAX_LIKES = 200;
 var COUNT_POSTS = 25;
 var ESC_KEYCODE = 27;
 var ENTER_KEYCODE = 13;
-var COMMENTS_COUNT = 1;
+var COMMENTS_COUNT = 2;
+var COMMENTS_TEXT_COUNT = 6;
 
 var urlImages = [
   './photos/1.jpg', './photos/2.jpg', './photos/3.jpg', './photos/4.jpg',
@@ -34,13 +35,22 @@ var gallery = document.querySelector('.gallery-overlay');
 
 function generateDataObj() {
   for (var i = 0; i < COUNT_POSTS; i++) {
-    var randomComment = comments[Math.floor(Math.random() * 6)];
+    var commentsCount = Math.ceil(Math.random() * COMMENTS_COUNT);
+    var randomComments = [];
+
+    if (commentsCount === 1) {
+      randomComments = [comments[Math.floor(Math.random() * COMMENTS_TEXT_COUNT)]];
+    } else {
+      randomComments = [comments[Math.floor(Math.random() * COMMENTS_TEXT_COUNT)], comments[Math.floor(Math.random() * COMMENTS_TEXT_COUNT)]];
+    }
+
     var randomLikes = Math.floor(Math.random() * MAX_LIKES);
-    randomLikes = randomLikes > MIN_LIKES ? randomLikes : randomLikes + MIN_LIKES;
+    randomLikes = randomLikes >= MIN_LIKES ? randomLikes : randomLikes + MIN_LIKES;
 
     var post = {
-      comment: randomComment,
-      likes: randomLikes
+      likes: randomLikes,
+      commentsCount: commentsCount,
+      comments: randomComments
     };
 
     posts.push(post);
@@ -55,7 +65,7 @@ function fillTemplates() {
 
     copyTemplate.querySelector('img').src = urlImages[i];
     copyTemplate.querySelector('.picture-likes').textContent = post.likes;
-    copyTemplate.querySelector('.picture-comments').textContent = post.comment;
+    copyTemplate.querySelector('.picture-comments').textContent = post.commentsCount;
     templateCopies[i] = copyTemplate;
   }
 }
@@ -71,10 +81,10 @@ function renderTemplate() {
 }
 
 
-function fillGallery(postData, imageUrl) {
+function fillGallery(post, imageUrl) {
   gallery.querySelector('img').src = imageUrl;
-  gallery.querySelector('.likes-count').textContent = postData.likes;
-  gallery.querySelector('.comments-count').textContent = 1;
+  gallery.querySelector('.likes-count').textContent = post.likes;
+  gallery.querySelector('.comments-count').textContent = post.commentsCount;
   showPopup();
 }
 
@@ -116,10 +126,11 @@ function fillDataPopup(evt) {
   var parentLink = evt.target.parentElement;
   var sourceImage = evt.target.src;
   var likesCount = parseInt(parentLink.querySelector('.picture-likes').textContent, 10);
+  var commentsCount = parentLink.querySelector('.picture-comments').textContent;
 
   gallery.querySelector('.gallery-overlay-image').src = sourceImage;
   gallery.querySelector('.likes-count').textContent = likesCount;
-  gallery.querySelector('.comments-count').textContent = COMMENTS_COUNT;
+  gallery.querySelector('.comments-count').textContent = commentsCount;
 }
 
 function getClicks() {
